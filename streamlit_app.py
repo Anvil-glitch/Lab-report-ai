@@ -12,21 +12,25 @@ with st.sidebar:
     st.info("Get your key at aistudio.google.com")
 
 if user_key:
-    genai.configure(api_key=user_key)
-    model = genai.GenerativeModel('gemini-1.5-flash-latest') 
-    
-    course = st.selectbox("Select Course", ["CHM 101", "CHM 107", "CHM 211", "CHM 212"])
-    title = st.text_input("Experiment Title")
-    data = st.text_area("Paste your readings/observations here")
-    
-    if st.button("Generate Formal Report"):
-        if not title or not data:
-            st.error("Please provide both a title and data!")
-        else:
-            with st.spinner("Writing report..."):
-                prompt = f"Write a professional university lab report for {course}. Title: {title}. Data: {data}. Use a formal tone with Abstract, Introduction, Method, Results, and Conclusion."
-                response = model.generate_content(prompt)
-                st.markdown("---")
-                st.markdown(response.text)
+    try:
+        genai.configure(api_key=user_key)
+        # We use gemini-1.5-flash-latest to ensure the API finds the model
+        model = genai.GenerativeModel('gemini-1.5-flash-latest')
+        
+        course = st.selectbox("Select Course", ["CHM 101", "CHM 107", "CHM 211", "CHM 212"])
+        title = st.text_input("Experiment Title")
+        data = st.text_area("Paste your readings/observations here")
+        
+        if st.button("Generate Formal Report"):
+            if not title or not data:
+                st.error("Please provide both a title and data!")
+            else:
+                with st.spinner("Writing report..."):
+                    prompt = f"Write a professional university lab report for {course}. Title: {title}. Data: {data}. Use a formal academic tone with Abstract, Introduction, Method, Results, and Conclusion."
+                    response = model.generate_content(prompt)
+                    st.markdown("---")
+                    st.markdown(response.text)
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
 else:
     st.warning("👈 Please enter your Gemini API Key in the sidebar to begin.")
