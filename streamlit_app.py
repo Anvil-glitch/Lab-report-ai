@@ -14,8 +14,8 @@ with st.sidebar:
 if user_key:
     try:
         genai.configure(api_key=user_key)
-        # We use gemini-1.5-flash-latest to ensure the API finds the model
-        model = genai.GenerativeModel('gemini-1.5-flash-latest')
+        # Using the absolute standard model name to avoid 404 errors
+        model = genai.GenerativeModel('gemini-1.5-flash')
         
         course = st.selectbox("Select Course", ["CHM 101", "CHM 107", "CHM 211", "CHM 212"])
         title = st.text_input("Experiment Title")
@@ -28,9 +28,11 @@ if user_key:
                 with st.spinner("Writing report..."):
                     prompt = f"Write a professional university lab report for {course}. Title: {title}. Data: {data}. Use a formal academic tone with Abstract, Introduction, Method, Results, and Conclusion."
                     response = model.generate_content(prompt)
-                    st.markdown("---")
-                    st.markdown(response.text)
+                    st.markdown("### Your Generated Report")
+                    st.write(response.text)
+                    st.download_button("Download Report as Text", response.text, file_name="lab_report.txt")
     except Exception as e:
-        st.error(f"An error occurred: {e}")
+        st.error(f"Model Error: {e}. Please ensure your API key is correct and active.")
 else:
     st.warning("👈 Please enter your Gemini API Key in the sidebar to begin.")
+
