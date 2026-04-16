@@ -13,7 +13,7 @@ with st.sidebar:
 
 if user_key:
     genai.configure(api_key=user_key)
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-1.5-flash-latest') 
     
     course = st.selectbox("Select Course", ["CHM 101", "CHM 107", "CHM 211", "CHM 212"])
     title = st.text_input("Experiment Title")
